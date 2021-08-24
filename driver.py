@@ -14,7 +14,7 @@ hash_logs = {}
 def main(path=os.getcwd()):
     global hash_logs
     print(f"the path is {path}")
-    context = [os.path.join(path, local_file_path) for local_file_path in os.listdir(path)]
+    context = [os.path.join(path, local_file_path) for local_file_path in fm.safe_listdir(path)]
     files = [file_path for file_path in context if os.path.isfile(file_path)]
     directories = [file_path for file_path in context if os.path.isdir(file_path)]
     
@@ -22,7 +22,14 @@ def main(path=os.getcwd()):
     #print(f"Error paths: {error_paths}")
 
     
-    file_hashes = [(fm.get_hash(file_path), file_path) for file_path in files]
+    file_hashes = []
+    for file_path in files:
+        try:
+            file_info = (fm.get_hash(file_path), file_path)
+            file_hashes.append(file_info)
+        except PermissionError:
+            pass
+
     for file_hash, file_path in file_hashes:
         if hash_logs.get(file_hash) is None:
             hash_logs.update({ file_hash : [file_path]})
@@ -35,7 +42,7 @@ def main(path=os.getcwd()):
 
 if __name__ == "__main__":
     hash_logs = {}
-    main()
+    main(path="C:\\")
     hash_info = fm.hash_info(hash_logs)
 
     hash_info.export_csv("Test.csv")

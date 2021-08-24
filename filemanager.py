@@ -17,6 +17,12 @@ class hash_info():
                 ofile.write(f"{k},{len(v)},{v}\n")
 
 
+def safe_listdir(path):
+    try:
+        return os.listdir(path)
+    except PermissionError:
+        return []
+
 def get_hash(filename):
     # Hash code taken from https://www.pythoncentral.io/hashing-files-with-python/
     hasher = hashlib.md5()
