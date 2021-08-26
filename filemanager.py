@@ -1,8 +1,8 @@
+from __future__ import unicode_literals
 import hashlib
 import os
 
-
-class hash_info():
+class Hash_info():
     def __init__(self, hash_logs):
         self.hash_logs = hash_logs
         
@@ -14,7 +14,10 @@ class hash_info():
     def export_csv(self, filename):
         with open(filename, 'w') as ofile:
             for k, v in self.hash_logs.items():
-                ofile.write(f"{k},{len(v)},{v}\n")
+                try:
+                    ofile.write(f"{k},{len(v)},{v}\n")
+                except UnicodeEncodeError:
+                    ofile.write(f"{k}, {len(v)}, UnicodeEncodeError")
 
 
 def safe_listdir(path):
@@ -24,7 +27,7 @@ def safe_listdir(path):
         return []
 
 def get_hash(filename):
-    # Hash code taken from https://www.pythoncentral.io/hashing-files-with-python/
+    # Hashlib code taken from https://www.pythoncentral.io/hashing-files-with-python/
     hasher = hashlib.md5()
     with open(filename, 'rb') as ifile:
         buf = ifile.read()
